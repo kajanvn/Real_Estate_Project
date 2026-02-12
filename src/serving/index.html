@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>House Price Prediction</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #1e40af;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 18px;
+            background-color: #ecfdf5;
+            border-left: 6px solid #10b981;
+            border-radius: 6px;
+            display: none;
+            font-size: 18px;
+            color: #065f46;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1>House Price Prediction</h1>
+    <p class="subtitle">Production ML model prediction</p>
+
+    <div class="form-group">
+        <label>X1 Transaction Date</label>
+        <input id="x1" type="number" step="0.01" placeholder="e.g. 2013.25">
+    </div>
+
+    <div class="form-group">
+        <label>X2 House Age</label>
+        <input id="x2" type="number" placeholder="e.g. 15">
+    </div>
+
+    <div class="form-group">
+        <label>X3 Distance to MRT</label>
+        <input id="x3" type="number" placeholder="e.g. 800">
+    </div>
+
+    <div class="form-group">
+        <label>X4 Convenience Stores</label>
+        <input id="x4" type="number" placeholder="e.g. 5">
+    </div>
+
+    <div class="form-group">
+        <label>X5 Latitude</label>
+        <input id="x5" type="number" step="0.00001" placeholder="e.g. 24.97">
+    </div>
+
+    <div class="form-group">
+        <label>X6 Longitude</label>
+        <input id="x6" type="number" step="0.00001" placeholder="e.g. 121.54">
+    </div>
+
+    <button onclick="predict()">Predict Price</button>
+
+    <div id="result" class="result"></div>
+
+    <div class="footer">
+        Predicted value is price of unit area of house.
+    </div>
+</div>
+
+<script>
+    function getValue(id) {
+        const value = document.getElementById(id).value;
+        return value === "" ? 0 : Number(value);
+    }
+
+    async function predict() {
+        const payload = {
+            X1_transaction_date: getValue("x1"),
+            X2_house_age: getValue("x2"),
+            X3_distance_to_MRT: getValue("x3"),
+            X4_number_of_convenience_stores: getValue("x4"),
+            X5_latitude: getValue("x5"),
+            X6_longitude: getValue("x6")
+        };
+
+        const response = await fetch("/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML =
+            `<strong>Predicted Price:</strong> ${data.predicted_price.toFixed(2)}`;
+        resultDiv.style.display = "block";
+    }
+</script>
+</body>
+</html>

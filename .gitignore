@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual env
+.venv/
+venv/
+
+# MLflow & artifacts
+mlruns/
+artifacts/
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+
+mlruns/
+mlartifacts/
+mlflow.db
+mlflow_tracking/
+.env
