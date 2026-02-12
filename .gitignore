@@ -17,9 +17,9 @@ artifacts/
 .vscode/
 .idea/
 
-
 mlruns/
 mlartifacts/
 mlflow.db
 mlflow_tracking/
 .env
+model/

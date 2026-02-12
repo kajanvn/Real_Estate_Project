@@ -1,47 +1,22 @@
-# -------------------------------
-# Base image
-# -------------------------------
-FROM python:3.11-slim
+FROM python:3.13-slim
 
-# -------------------------------
-# Environment variables
-# -------------------------------
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# -------------------------------
-# Set working directory
-# -------------------------------
 WORKDIR /app
 
-# -------------------------------
-# Install system dependencies
-# -------------------------------
+# System deps
 RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# -------------------------------
-# Copy dependency files
-# -------------------------------
+# Copy requirements
 COPY requirements.txt .
 
-# -------------------------------
-# Install Python dependencies
-# -------------------------------
 RUN pip install --no-cache-dir -r requirements.txt
 
-# -------------------------------
-# Copy application code
-# -------------------------------
-COPY src ./src
+# Copy application
+COPY src/ ./src/
+COPY model/ ./model/
+COPY data/ ./data/
 
-# -------------------------------
-# Expose API port
-# -------------------------------
 EXPOSE 8000
 
-# -------------------------------
-# Start FastAPI server
-# -------------------------------
 CMD ["uvicorn", "src.serving.app:app", "--host", "0.0.0.0", "--port", "8000"]

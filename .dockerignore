@@ -1,12 +1,13 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
-
+*.pyd
+.venv/
 .env
-.venv
-venv/
 
-.git
+# Git
+.git/
 .gitignore
 
 artifacts/
@@ -18,3 +19,7 @@ mlartifacts/
 mlflow.db
 mlflow_tracking/
 .env
+
+# OS
+.DS_Store
+Thumbs.db
