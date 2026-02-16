@@ -6,7 +6,7 @@ from src.preprocessing.outliers import (
     cap_outliers,
 )
 
-OUTLIER_COLUMNS = ["X5_latitude", "X6_longitude"]
+OUTLIER_COLUMNS = ["X3_distance_to_MRT","X5_latitude", "X6_longitude"]
 
 
 def apply_feature_engineering(

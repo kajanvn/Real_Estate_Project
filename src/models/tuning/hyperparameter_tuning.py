@@ -49,7 +49,7 @@ from src.data_preparation.load_data import load_raw_data
 # ==========================================================
 # 🔴 DEVELOPER CONTROLS
 # ==========================================================
-MODEL_NAME = "xgboost"
+MODEL_NAME = "random_forest"
 # "linear_regression", "knn", "decision_tree",
 # "random_forest", "gradient_boosting", "adaboost", "xgboost"
 
@@ -89,8 +89,11 @@ def get_model_and_param_grid(model_name: str):
     if model_name == "random_forest":
         return RandomForestRegressor(random_state=RANDOM_STATE), {
             "n_estimators": [200, 300],
-            "max_depth": [None, 10, 20],
-            "min_samples_split": [2, 5],
+            "max_depth": [10, 20],
+            "min_samples_split": [2, 5, 10],
+            "min_samples_leaf": [1, 2, 4],
+            "max_features": ["sqrt", "log2", 0.8],
+            "bootstrap": [True]
         }
 
     if model_name == "gradient_boosting":
@@ -112,10 +115,12 @@ def get_model_and_param_grid(model_name: str):
             random_state=RANDOM_STATE,
             n_jobs=-1,
         ), {
-            "n_estimators": [225,250],
-            "learning_rate": [0.02,0.025],
+            "n_estimators": [250,300],
+            "learning_rate": [0.02,0.025,0.03,0.035],
             "max_depth": [3, 4],
-            "subsample": [0.9,0.95,1],
+            "subsample": [0.8,0.9,0.95,1],
+            "colsample_bytree":[0.7,0.8],
+            "min_child_weight":[1]
         }
 
     raise ValueError(f"Unsupported model: {model_name}")
@@ -197,17 +202,20 @@ def run_hyperparameter_tuning(df: pd.DataFrame) -> None:
         plt.close()
 
         if hasattr(best_model, "feature_importances_"):
+
             pd.Series(
                 best_model.feature_importances_,
                 index=X.columns
-            ).sort_values().plot(kind="barh", figsize=(8, 6))
+                ).sort_values().plot(kind="barh", figsize=(8, 6))
+
             plt.title("Feature Importance")
             plt.tight_layout()
             plt.savefig(artifact_dir / "feature_importance.png")
             plt.close()
 
-            explainer = shap.Explainer(best_model, X_train)
-            shap_values = explainer(X_test)
+            # ===== SHAP =====
+            explainer = shap.TreeExplainer(best_model)
+            shap_values = explainer(X_test, check_additivity=False)
 
             shap.summary_plot(shap_values, X_test, show=False)
             plt.tight_layout()

@@ -146,8 +146,10 @@ def plot_before_after_outlier_capping_vertical(
 
     # 🔑 Map processed → raw column names
     RAW_COLUMN_MAP = {
+        "X3_distance_to_MRT":"X3 distance to the nearest MRT station",
         "X5_latitude": "X5 latitude",
-        "X6_longitude": "X6 longitude",
+        "X6_longitude": "X6 longitude"
+
     }
 
     features = list(bounds.keys())  # processed names
@@ -155,7 +157,7 @@ def plot_before_after_outlier_capping_vertical(
     fig, axes = plt.subplots(
         nrows=len(features),
         ncols=2,
-        figsize=(12, 8)
+        figsize=(12, 4 * len(features))
     )
 
     for row, feature in enumerate(features):
@@ -179,7 +181,7 @@ def plot_before_after_outlier_capping_vertical(
         axes[row, 1].legend()
 
     plt.suptitle(
-        "Outlier Capping Validation (Latitude & Longitude)",
+        "Outlier Capping Validation (Latitude & Longitude & X4_number_of_convenience_stores)",
         fontsize=14
     )
     plt.tight_layout(rect=[0, 0, 1, 0.95])
