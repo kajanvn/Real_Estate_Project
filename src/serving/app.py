@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from contextlib import asynccontextmanager
 import pandas as pd
 from pathlib import Path
@@ -53,10 +53,21 @@ def health_check():
 # --------------------------------------------------
 @app.post("/predict")
 def predict_price(features: HouseFeatures):
+
+    # ✅ Empty value protection
+    data_dict = features.model_dump()
+
+    for key, value in data_dict.items():
+        if value is None or value == "":
+            raise HTTPException(
+                status_code=400,
+                detail=f"Field '{key}' cannot be empty"
+            )
+
     model = load_production_model()
 
     # Convert request → DataFrame (must match model signature)
-    input_df = pd.DataFrame([features.model_dump()])
+    input_df = pd.DataFrame([data_dict])
 
     prediction = model.predict(input_df)
 

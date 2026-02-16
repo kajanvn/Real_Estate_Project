@@ -3,167 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <title>House Price Prediction</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f4f6f8;
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fb;   /* Mild professional color */
             margin: 0;
             padding: 0;
         }
 
         .container {
-            max-width: 700px;
-            margin: 50px auto;
-            background-color: #ffffff;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            width: 500px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
         }
 
-        h1 {
+        h2 {
             text-align: center;
-            color: #1f2937;
-            margin-bottom: 5px;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #6b7280;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
+            color: #2c3e50;
         }
 
         label {
             display: block;
-            font-size: 14px;
-            color: #374151;
-            margin-bottom: 6px;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #34495e;
         }
 
         input {
             width: 100%;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #d1d5db;
+            padding: 8px;
+            margin-top: 5px;
             border-radius: 5px;
+            border: 1px solid #ccc;
         }
 
         button {
+            margin-top: 20px;
             width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            background-color: #2563eb;
+            padding: 10px;
+            background-color: #3498db;
             color: white;
             border: none;
             border-radius: 6px;
+            font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
         }
 
         button:hover {
-            background-color: #1e40af;
+            background-color: #2980b9;
         }
 
         .result {
-            margin-top: 25px;
-            padding: 18px;
-            background-color: #ecfdf5;
-            border-left: 6px solid #10b981;
-            border-radius: 6px;
-            display: none;
+            margin-top: 20px;
             font-size: 18px;
-            color: #065f46;
+            text-align: center;
+            color: #27ae60;
+            font-weight: bold;
         }
 
-        .footer {
-            margin-top: 30px;
+        .error {
+            color: red;
             text-align: center;
-            font-size: 12px;
-            color: #6b7280;
+            margin-top: 10px;
         }
+
     </style>
 </head>
 
 <body>
+
 <div class="container">
-    <h1>House Price Prediction</h1>
-    <p class="subtitle">Production ML model prediction</p>
 
-    <div class="form-group">
-        <label>X1 Transaction Date</label>
-        <input id="x1" type="number" step="0.01" placeholder="e.g. 2013.25">
-    </div>
+    <h2>🏠 House Price Prediction</h2>
 
-    <div class="form-group">
-        <label>X2 House Age</label>
-        <input id="x2" type="number" placeholder="e.g. 15">
-    </div>
+    <label>Transaction Date</label>
+    <input type="number" id="x1" step="any" required>
 
-    <div class="form-group">
-        <label>X3 Distance to MRT</label>
-        <input id="x3" type="number" placeholder="e.g. 800">
-    </div>
+    <label>House Age</label>
+    <input type="number" id="x2" step="any" required>
 
-    <div class="form-group">
-        <label>X4 Convenience Stores</label>
-        <input id="x4" type="number" placeholder="e.g. 5">
-    </div>
+    <label>Distance to MRT</label>
+    <input type="number" id="x3" step="any" required>
 
-    <div class="form-group">
-        <label>X5 Latitude</label>
-        <input id="x5" type="number" step="0.00001" placeholder="e.g. 24.97">
-    </div>
+    <label>Number of Convenience Stores</label>
+    <input type="number" id="x4" step="1" required>
 
-    <div class="form-group">
-        <label>X6 Longitude</label>
-        <input id="x6" type="number" step="0.00001" placeholder="e.g. 121.54">
-    </div>
+    <label>Latitude</label>
+    <input type="number" id="x5" step="any" required>
+
+    <label>Longitude</label>
+    <input type="number" id="x6" step="any" required>
 
     <button onclick="predict()">Predict Price</button>
 
-    <div id="result" class="result"></div>
+    <div class="result" id="result"></div>
+    <div class="error" id="error"></div>
 
-    <div class="footer">
-        Predicted value is price of unit area of house.
-    </div>
 </div>
 
+
 <script>
-    function getValue(id) {
-        const value = document.getElementById(id).value;
-        return value === "" ? 0 : Number(value);
+
+async function predict() {
+
+    const payload = {
+        X1_transaction_date: document.getElementById("x1").value,
+        X2_house_age: document.getElementById("x2").value,
+        X3_distance_to_MRT: document.getElementById("x3").value,
+        X4_number_of_convenience_stores: document.getElementById("x4").value,
+        X5_latitude: document.getElementById("x5").value,
+        X6_longitude: document.getElementById("x6").value
+    };
+
+    // ✅ Validation — prevent empty submission
+    for (const key in payload) {
+        if (payload[key] === "" || payload[key] === null) {
+            document.getElementById("error").innerText =
+                "Please fill all input fields.";
+            document.getElementById("result").innerText = "";
+            return;
+        }
     }
 
-    async function predict() {
-        const payload = {
-            X1_transaction_date: getValue("x1"),
-            X2_house_age: getValue("x2"),
-            X3_distance_to_MRT: getValue("x3"),
-            X4_number_of_convenience_stores: getValue("x4"),
-            X5_latitude: getValue("x5"),
-            X6_longitude: getValue("x6")
-        };
+    // Convert to numeric AFTER validation
+    const numericPayload = {
+        X1_transaction_date: parseFloat(payload.X1_transaction_date),
+        X2_house_age: parseFloat(payload.X2_house_age),
+        X3_distance_to_MRT: parseFloat(payload.X3_distance_to_MRT),
+        X4_number_of_convenience_stores: parseInt(payload.X4_number_of_convenience_stores),
+        X5_latitude: parseFloat(payload.X5_latitude),
+        X6_longitude: parseFloat(payload.X6_longitude)
+    };
+
+    try {
 
         const response = await fetch("/predict", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(numericPayload)
         });
 
         const data = await response.json();
 
-        const resultDiv = document.getElementById("result");
-        resultDiv.innerHTML =
-            `<strong>Predicted Price:</strong> ${data.predicted_price.toFixed(2)}`;
-        resultDiv.style.display = "block";
+        document.getElementById("result").innerText =
+            "Predicted Price: " + data.predicted_price.toFixed(2);
+
+        document.getElementById("error").innerText = "";
+
+    } catch (error) {
+        document.getElementById("error").innerText =
+            "Prediction failed. Please try again.";
+        document.getElementById("result").innerText = "";
     }
+}
+
 </script>
+
 </body>
 </html>
