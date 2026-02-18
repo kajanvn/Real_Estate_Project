@@ -28,11 +28,6 @@ This project predicts real estate prices using machine learning models. It cover
 │   │   └── tuning/hyperparameter_tuning.py
 │   ├── preprocessing/
 │   └── serving/
-├── services/
-│   └── api/main.py
-├── mlartifacts/
-├── mlruns/
-└── artifacts/
 ```
 
 ## Setup Instructions
